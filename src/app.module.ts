@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CloudinaryProvider } from './cloudinary/cloudinary.provider';
+import { Product } from './product/entities/product.entity';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -16,11 +19,14 @@ import { CloudinaryProvider } from './cloudinary/cloudinary.provider';
       database: process.env.DB_NAME,
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      entities: [],
+      entities: [Product],
       synchronize: true,
     }),
     CloudinaryModule,
+    ProductModule,
   ],
   providers: [CloudinaryProvider],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly dataSource: DataSource) {}
+}
